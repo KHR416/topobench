@@ -41,24 +41,12 @@ public class FatTreeSigcomm extends Graph{
 
 	public ArrayList TrafficGenAllAll()
 	{
-
-		// Over-ridden because I need traffic only between nodes with terminals
-		// Server j on node i i.e. [(noNodeswithTerminals - 1) * i + j] th server sends to jth server on all other nodes
-
-		int noNodeswithTerminals = K*K/2;
-		int numPerms = totalWeight / noNodeswithTerminals;
-
 		ArrayList<TrafficPair> ls = new ArrayList<TrafficPair>();
-		for (int i = 0; i < noNodeswithTerminals; i++) {
-			for (int target = 0; target < noNodeswithTerminals; target++) {
-				if (target == i) continue;
-				for (int svr = 0; svr < numPerms; svr++) {
-					ls.add(new TrafficPair(numPerms * i + svr, numPerms * target + svr));
-				}
-			}
-		}
+		for (int svr = 0; svr < totalWeight; svr++)
+			for (int svrto = 0; svrto < totalWeight; svrto++)
+				ls.add(new TrafficPair(svr, svrto));
 
-		System.out.println("NUM FLOWS = " + ls.size());
+		System.out.println("ALL-ALL FLOWS = " + ls.size());
 
 		return ls;
 	}
