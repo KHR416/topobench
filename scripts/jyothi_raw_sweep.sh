@@ -19,6 +19,7 @@ HYPERCUBE_DIMS=${HYPERCUBE_DIMS:-"6 7 8 9 10"}
 DRAGONFLY_P=${DRAGONFLY_P:-"2 3 4"}
 OUTDIR=${OUTDIR:-resultfiles/jyothi_raw}
 COMPARE_RANDOM=${COMPARE_RANDOM:-1}
+GEN_JOBS=${GEN_JOBS:-4}
 
 command -v javac >/dev/null || { echo "javac not found" >&2; exit 1; }
 command -v java >/dev/null || { echo "java not found" >&2; exit 1; }
@@ -31,7 +32,12 @@ if printf '%s\n' "$MODES" | grep -qw 4; then
 	}
 fi
 
-mkdir -p "$OUTDIR" topology/pathlengths
+ROW_DIR="$OUTDIR/rows"
+WORK_DIR="$OUTDIR/work"
+META_DIR="$OUTDIR/meta"
+
+rm -rf "$ROW_DIR" "$WORK_DIR" "$META_DIR"
+mkdir -p "$OUTDIR/logs" "$ROW_DIR" "$WORK_DIR" "$META_DIR" topology/pathlengths
 javac -nowarn lpmaker/ProduceLP.java
 
 rows="$OUTDIR/raw_results.csv"
@@ -51,19 +57,19 @@ target_servers_for_port() {
 	echo $(( k * k * k / 4 ))
 }
 
-solve_generated_lp() {
-	local lp_name=$1
-	local path_name=$2
-	local stem=$3
-	[[ -s "$lp_name" ]] || { echo "missing LP $lp_name for $stem" >&2; exit 1; }
-	mv "$lp_name" "topology/${stem}.lp"
-	if [[ -s "$path_name" ]]; then
-		mv "$path_name" "topology/pathlengths/${stem}.txt"
+write_generated_lp() {
+	local workdir=$1
+	local stem=$2
+	local lp_out=$3
+	local path_out=$4
+	[[ -s "$workdir/my.0.lp" ]] || { echo "missing LP for $stem" >&2; exit 1; }
+	mv "$workdir/my.0.lp" "$lp_out"
+	if [[ -s "$workdir/pl.0" ]]; then
+		mv "$workdir/pl.0" "$path_out"
 	fi
-	bash scripts/lpRun.sh "topology/${stem}.lp"
 }
 
-run_case() {
+generate_case() {
 	local topology=$1
 	local variant=$2
 	local size_param=$3
@@ -75,25 +81,50 @@ run_case() {
 	local servers=$9
 	shift 9
 	local raw_args=("$@")
-	local raw_k random_k relative stem
+	local stem workdir raw_lp raw_path random_lp random_path meta
 
-	rm -f my.0.lp pl.0 maxWeightMatch.txt lpmaker/serverDist1.txt
-	java lpmaker/ProduceLP "${raw_args[@]}" >/dev/null
 	stem="${topology}_${variant}_${size_param}_m${mode}_r${run}"
-	raw_k=$(solve_generated_lp my.0.lp pl.0 "$stem")
-	random_k=""
-	relative=""
+	workdir="$WORK_DIR/$stem"
+	raw_lp="topology/${stem}.lp"
+	raw_path="topology/pathlengths/${stem}.txt"
+	random_lp=""
+	random_path=""
+	meta="$META_DIR/${stem}.tsv"
+
+	rm -rf "$workdir"
+	mkdir -p "$workdir/lpmaker"
+	ln -sf "$REPO_ROOT/lpmaker/maxWeight.py" "$workdir/lpmaker/maxWeight.py"
+
+	(
+		cd "$workdir"
+		java -cp "$REPO_ROOT" lpmaker/ProduceLP "${raw_args[@]}"
+	) > "$OUTDIR/logs/${stem}.gen.log" 2>&1
+	write_generated_lp "$workdir" "$stem" "$REPO_ROOT/$raw_lp" "$REPO_ROOT/$raw_path"
 
 	if [[ "$COMPARE_RANDOM" == "1" ]]; then
-		rm -f my.0.lp pl.0 maxWeightMatch.txt lpmaker/serverDist1.txt
-		java lpmaker/ProduceLP 1 0 garbage "$mode" "$switches" "$switchports" 0 0 "$servers" 0.0 0 0 0 0 0 0 0 0 0 1 "$(( seed + 700000000 ))" >/dev/null
-		random_k=$(solve_generated_lp my.0.lp pl.0 "${stem}_same_equipment_random")
-		relative=$(awk -v a="$raw_k" -v b="$random_k" 'BEGIN { if (b > 0) printf "%.10f", a / b; }')
+		rm -f "$workdir/my.0.lp" "$workdir/pl.0" "$workdir/maxWeightMatch.txt" "$workdir/lpmaker/serverDist1.txt"
+		random_lp="topology/${stem}_same_equipment_random.lp"
+		random_path="topology/pathlengths/${stem}_same_equipment_random.txt"
+		(
+			cd "$workdir"
+			java -cp "$REPO_ROOT" lpmaker/ProduceLP 1 0 garbage "$mode" "$switches" "$switchports" 0 0 "$servers" 0.0 0 0 0 0 0 0 0 0 0 1 "$(( seed + 700000000 ))"
+		) > "$OUTDIR/logs/${stem}_same_equipment_random.gen.log" 2>&1
+		write_generated_lp "$workdir" "${stem}_same_equipment_random" "$REPO_ROOT/$random_lp" "$REPO_ROOT/$random_path"
 	fi
 
-	printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
+	rm -rf "$workdir"
+	printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
 		"$topology" "$variant" "$size_param" "$mode" "$run" "$seed" \
-		"$switches" "$switchports" "$servers" "$raw_k" "$random_k" "$relative" >> "$rows"
+		"$switches" "$switchports" "$servers" "$raw_lp" "$random_lp" > "$meta"
+}
+
+producer_pids=()
+run_case() {
+	while [[ $(jobs -rp | wc -l) -ge $GEN_JOBS ]]; do
+		wait -n
+	done
+	generate_case "$@" &
+	producer_pids+=("$!")
 }
 
 for mode in $MODES; do
@@ -142,6 +173,32 @@ for mode in $MODES; do
 			done
 		fi
 	done
+done
+
+gen_failed=0
+for pid in "${producer_pids[@]}"; do
+	wait "$pid" || gen_failed=1
+done
+if (( gen_failed != 0 )); then
+	echo "LP generation failed" >&2
+	exit 1
+fi
+
+shopt -s nullglob
+metafiles=("$META_DIR"/*.tsv)
+shopt -u nullglob
+for meta in "${metafiles[@]}"; do
+	IFS=$'\t' read -r topology variant size_param mode run seed switches switchports servers raw_lp random_lp < "$meta"
+	raw_k=$(bash scripts/lpRun.sh "$raw_lp")
+	random_k=""
+	relative=""
+	if [[ -n "$random_lp" ]]; then
+		random_k=$(bash scripts/lpRun.sh "$random_lp")
+		relative=$(awk -v a="$raw_k" -v b="$random_k" 'BEGIN { if (b > 0) printf "%.10f", a / b; }')
+	fi
+	printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
+		"$topology" "$variant" "$size_param" "$mode" "$run" "$seed" \
+		"$switches" "$switchports" "$servers" "$raw_k" "$random_k" "$relative" >> "$rows"
 done
 
 summary="$OUTDIR/raw_summary.csv"
