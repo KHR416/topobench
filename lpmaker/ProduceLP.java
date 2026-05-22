@@ -69,7 +69,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -83,7 +83,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -111,7 +111,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -125,7 +125,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -140,7 +140,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -154,7 +154,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -194,7 +194,7 @@ public class ProduceLP {
 				if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
 	                        if (createLP == 1 && trafficMode == 4) {
         	                        mynet.printServerDistance("lpmaker/serverDist1.txt");
-                	                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                	                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                         	        runCommand(cmd);
                                 	mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         	}
@@ -216,7 +216,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -232,7 +232,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -248,7 +248,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -261,7 +261,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -274,7 +274,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -288,7 +288,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -326,7 +326,7 @@ public class ProduceLP {
 				if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
 	                        if (createLP == 1 && trafficMode == 4) {
         	                        mynet.printServerDistance("lpmaker/serverDist1.txt");
-                	                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                	                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                         	        runCommand(cmd);
                                 	mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         	}
@@ -342,7 +342,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -356,7 +356,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("randCompare." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 randCompare.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 randCompare.PrintGraphforMCFFairCondensed("randCompare." + runs + ".lp", trafficMode, 100);
                         }
@@ -381,7 +381,7 @@ public class ProduceLP {
 			if (createLP == 1 && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }
@@ -391,7 +391,7 @@ public class ProduceLP {
 			if (createLP == 1  && trafficMode == 1) mynet.PrintSimpleGraph("randCompare." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 randCompare.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 randCompare.PrintGraphforMCFFairCondensed("randCompare." + runs + ".lp", trafficMode, 100);
                         }
@@ -416,7 +416,7 @@ public class ProduceLP {
 			if (createLP == 1  && trafficMode == 1) mynet.PrintSimpleGraph("my." + runs + ".lp", trafficMode);
                         if (createLP == 1 && trafficMode == 4) {
                                 mynet.printServerDistance("lpmaker/serverDist1.txt");
-                                String cmd = "python lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
+                                String cmd = "python3 lpmaker/maxWeight.py lpmaker/serverDist1.txt maxWeightMatch.txt";
                                 runCommand(cmd);
                                 mynet.PrintGraphforMCFFairCondensed("my." + runs + ".lp", trafficMode, 100);
                         }

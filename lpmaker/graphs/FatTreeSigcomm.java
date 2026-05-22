@@ -46,15 +46,15 @@ public class FatTreeSigcomm extends Graph{
 		// Server j on node i i.e. [(noNodeswithTerminals - 1) * i + j] th server sends to jth server on all other nodes
 
 		int noNodeswithTerminals = K*K/2;
-		int numPerms = noNodeswithTerminals - 1;
+		int numPerms = totalWeight / noNodeswithTerminals;
 
-		ArrayList<Integer> ls = new ArrayList<Integer>();
+		ArrayList<TrafficPair> ls = new ArrayList<TrafficPair>();
 		for (int i = 0; i < noNodeswithTerminals; i++) {
-			int target = 0;
-			for (int svr = 0; svr < numPerms; svr++) {
-				if (target == i) target ++;
-				ls.add(numPerms * target  + svr);
-				target ++;
+			for (int target = 0; target < noNodeswithTerminals; target++) {
+				if (target == i) continue;
+				for (int svr = 0; svr < numPerms; svr++) {
+					ls.add(new TrafficPair(numPerms * i + svr, numPerms * target + svr));
+				}
 			}
 		}
 
