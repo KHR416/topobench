@@ -21,6 +21,10 @@ OUTDIR=${OUTDIR:-resultfiles/jyothi_raw}
 COMPARE_RANDOM=${COMPARE_RANDOM:-1}
 GEN_JOBS=${GEN_JOBS:-4}
 
+log_progress() {
+	printf '[%(%Y-%m-%d %H:%M:%S)T] %s\n' -1 "$*"
+}
+
 command -v javac >/dev/null || { echo "javac not found" >&2; exit 1; }
 command -v java >/dev/null || { echo "java not found" >&2; exit 1; }
 command -v highs >/dev/null || { echo "highs not found" >&2; exit 1; }
@@ -38,7 +42,10 @@ META_DIR="$OUTDIR/meta"
 
 rm -rf "$ROW_DIR" "$WORK_DIR" "$META_DIR"
 mkdir -p "$OUTDIR/logs" "$ROW_DIR" "$WORK_DIR" "$META_DIR" topology/pathlengths
+log_progress "config NRUNS=$NRUNS PORTS=\"$PORTS\" MODES=\"$MODES\" TOPOLOGIES=\"$TOPOLOGIES\" HYPERCUBE_DIMS=\"$HYPERCUBE_DIMS\" DRAGONFLY_P=\"$DRAGONFLY_P\" COMPARE_RANDOM=$COMPARE_RANDOM GEN_JOBS=$GEN_JOBS OUTDIR=$OUTDIR"
+log_progress "compile javac lpmaker/ProduceLP.java"
 javac -nowarn lpmaker/ProduceLP.java
+log_progress "compile done"
 
 rows="$OUTDIR/raw_results.csv"
 printf 'topology,variant,size_param,mode,run,seed,switches,switchports,servers,raw_k,random_baseline_k,relative_to_random\n' > "$rows"
@@ -95,21 +102,25 @@ generate_case() {
 	mkdir -p "$workdir/lpmaker"
 	ln -sf "$REPO_ROOT/lpmaker/maxWeight.py" "$workdir/lpmaker/maxWeight.py"
 
+	log_progress "generate start $stem"
 	(
 		cd "$workdir"
 		java -cp "$REPO_ROOT" lpmaker/ProduceLP "${raw_args[@]}"
 	) > "$OUTDIR/logs/${stem}.gen.log" 2>&1
 	write_generated_lp "$workdir" "$stem" "$REPO_ROOT/$raw_lp" "$REPO_ROOT/$raw_path"
+	log_progress "generate done $stem -> $raw_lp"
 
 	if [[ "$COMPARE_RANDOM" == "1" ]]; then
 		rm -f "$workdir/my.0.lp" "$workdir/pl.0" "$workdir/maxWeightMatch.txt" "$workdir/lpmaker/serverDist1.txt"
 		random_lp="topology/${stem}_same_equipment_random.lp"
 		random_path="topology/pathlengths/${stem}_same_equipment_random.txt"
+		log_progress "generate random-baseline start ${stem}_same_equipment_random"
 		(
 			cd "$workdir"
 			java -cp "$REPO_ROOT" lpmaker/ProduceLP 1 0 garbage "$mode" "$switches" "$switchports" 0 0 "$servers" 0.0 0 0 0 0 0 0 0 0 0 1 "$(( seed + 700000000 ))"
 		) > "$OUTDIR/logs/${stem}_same_equipment_random.gen.log" 2>&1
 		write_generated_lp "$workdir" "${stem}_same_equipment_random" "$REPO_ROOT/$random_lp" "$REPO_ROOT/$random_path"
+		log_progress "generate random-baseline done ${stem}_same_equipment_random -> $random_lp"
 	fi
 
 	rm -rf "$workdir"
@@ -119,14 +130,17 @@ generate_case() {
 }
 
 producer_pids=()
+scheduled_cases=0
 run_case() {
 	while [[ $(jobs -rp | wc -l) -ge $GEN_JOBS ]]; do
 		wait -n
 	done
+	scheduled_cases=$(( scheduled_cases + 1 ))
 	generate_case "$@" &
 	producer_pids+=("$!")
 }
 
+log_progress "generation scheduling start"
 for mode in $MODES; do
 	for run in $(seq 1 "$NRUNS"); do
 		for k in $PORTS; do
@@ -174,6 +188,7 @@ for mode in $MODES; do
 		fi
 	done
 done
+log_progress "generation scheduling done cases=$scheduled_cases"
 
 gen_failed=0
 for pid in "${producer_pids[@]}"; do
@@ -183,18 +198,28 @@ if (( gen_failed != 0 )); then
 	echo "LP generation failed" >&2
 	exit 1
 fi
+log_progress "generation all done cases=$scheduled_cases"
 
 shopt -s nullglob
 metafiles=("$META_DIR"/*.tsv)
 shopt -u nullglob
+total_solves=${#metafiles[@]}
+solve_index=0
+log_progress "solve start cases=$total_solves solver=HiGHS-PDLP presolve=off"
 for meta in "${metafiles[@]}"; do
+	solve_index=$(( solve_index + 1 ))
 	IFS=$'\t' read -r topology variant size_param mode run seed switches switchports servers raw_lp random_lp < "$meta"
+	case_label="${topology}_${variant}_${size_param}_m${mode}_r${run}"
+	log_progress "solve [$solve_index/$total_solves] raw start $case_label"
 	raw_k=$(bash scripts/lpRun.sh "$raw_lp")
+	log_progress "solve [$solve_index/$total_solves] raw done $case_label K=$raw_k"
 	random_k=""
 	relative=""
 	if [[ -n "$random_lp" ]]; then
+		log_progress "solve [$solve_index/$total_solves] random-baseline start $case_label"
 		random_k=$(bash scripts/lpRun.sh "$random_lp")
 		relative=$(awk -v a="$raw_k" -v b="$random_k" 'BEGIN { if (b > 0) printf "%.10f", a / b; }')
+		log_progress "solve [$solve_index/$total_solves] random-baseline done $case_label K_random=$random_k relative=$relative"
 	fi
 	printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
 		"$topology" "$variant" "$size_param" "$mode" "$run" "$seed" \
@@ -221,7 +246,8 @@ summary="$OUTDIR/raw_summary.csv"
 		}
 	}
 	' "$rows" | sort -t, -k1,1 -k3,3 -k4,4n
-} > "$summary"
+	} > "$summary"
 
+log_progress "summary done"
 echo "Wrote $rows"
 echo "Wrote $summary"
