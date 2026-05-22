@@ -30,6 +30,10 @@ public class Hypercube extends RegularGraph{
                 setUpFixWeight(0);
                 for(int t = 0; t < noNodes; t++){
                         weightEachNode[t] = this.svrp;
+                        if(t == 0){
+                                weightBeforeEachNode[t] = 0;
+                        }
+                        weightBeforeEachNode[t+1] = weightEachNode[t] + weightBeforeEachNode[t];
                         totalWeight += this.svrp;
                 }
 	
