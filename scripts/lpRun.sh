@@ -6,8 +6,8 @@
 set -euo pipefail
 
 # USAGE: Input is a file containing a linear program for throughput in CPLEX format.
-# Output is the throughput value obtained. This local reproduction copy uses HiGHS
-# instead of the original Gurobi command.
+# Output is the throughput value obtained. This local reproduction copy always uses
+# HiGHS PDLP with presolve disabled instead of the original Gurobi command.
 
 infile=$1
 
@@ -33,13 +33,9 @@ awk '
 	}
 ' "$infile" > "$solver_input"
 
-if [[ ${HIGHS_USE_PDLP:-0} == "1" ]]; then
-	optfile=$(mktemp "${TMPDIR:-/tmp}/topobench-highs-opts.XXXXXX")
-	printf 'solver = pdlp\npresolve = off\nkkt_tolerance = 1e-6\n' > "$optfile"
-	highs --options_file "$optfile" "$solver_input" > "$logfile" 2>&1 || highs_status=$?
-else
-	highs --solver ipm --parallel off "$solver_input" > "$logfile" 2>&1 || highs_status=$?
-fi
+optfile=$(mktemp "${TMPDIR:-/tmp}/topobench-highs-opts.XXXXXX")
+printf 'solver = pdlp\npresolve = off\nkkt_tolerance = 1e-6\n' > "$optfile"
+highs --options_file "$optfile" "$solver_input" > "$logfile" 2>&1 || highs_status=$?
 highs_status=${highs_status:-0}
 
 objective_line=$(grep "Objective value" "$logfile" | tail -1 || true)
