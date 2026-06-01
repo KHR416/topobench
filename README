@@ -82,6 +82,30 @@ After execution, check the 'plots' directory for fatCompare.pdf. The values > 1 
 
 5.  Paper (3) includes results on a large number of real-world graphs. These can be found in 'graphrepo'.
 
+LOCAL RAW-K REPRODUCTION
+------------------------
+This fork adds `scripts/jyothi_raw_sweep.sh`, a local reproduction helper for raw TopoBench K values used by the wireless full-mesh HPC topology thesis. It generates LP files with the original Java `lpmaker/ProduceLP.java`, solves them through `scripts/lpRun.sh`, and writes compact CSV outputs under `resultfiles/<OUTDIR>/`.
+
+Default run:
+	cd topobench
+	bash scripts/jyothi_raw_sweep.sh
+
+Default parameters are:
+	NRUNS=10
+	PORTS="6 8 10 12 14 16"
+	MODES="0 1 4"
+	TOPOLOGIES="fat-tree jellyfish hypercube dragonfly"
+	OUTDIR=resultfiles/jyothi_raw
+	COMPARE_RANDOM=1
+	GEN_JOBS=4
+
+Traffic modes are `0` for random permutation, `1` for all-to-all, and `4` for longest matching. The script requires `javac`, `java`, `highs`, and Python `networkx` when mode 4 is enabled.
+
+Short smoke run example:
+	NRUNS=1 PORTS="6 8" MODES="0" TOPOLOGIES="fat-tree jellyfish" OUTDIR=resultfiles/jyothi_raw_smoke bash scripts/jyothi_raw_sweep.sh
+
+The main committed outputs are `raw_results.csv` and `raw_summary.csv`. Generated LP files, pathlength files, solver logs, and compiled artifacts are ignored because they are derived and can be large.
+
 NOTES
 -----
 * Error handling is poor at this time. For example, if you're running networks that are too large, there will be memory errors etc. These have not been gracefully handled so far.
