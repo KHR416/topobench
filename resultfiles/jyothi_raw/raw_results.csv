@@ -1,0 +1,6 @@
+topology,variant,size_param,mode,run,seed,switches,switchports,servers,raw_k,random_baseline_k,relative_to_random
+Fat-tree,sigcomm,k6,0,1,1060001,45,6,54,1.0000000000,1.1796366623,0.8477186510
+Jellyfish,same-equipment-fat-tree,k6,0,1,2060001,45,6,54,1.2256620012,1.1700557257,1.0475244677
+Fat-tree,sigcomm,k8,0,1,1080001,80,8,128,1.0000000000,1.2955653517,0.7718638035
+Jellyfish,same-equipment-fat-tree,k8,0,1,2080001,80,8,128,1.3036972480,1.2833926900,1.0158210018
+Fat-tree,sigcomm,k10,0,1,1100001,125,10,250,1.0000000000,1.3192636592,0.7579985949

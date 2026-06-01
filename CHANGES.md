@@ -1,0 +1,20 @@
+# Local TopoBench Modifications
+
+This repository is based on the TopoBench artifact by Singla, Jyothi, Godfrey, Kolla, and collaborators.
+
+The local history keeps the original imported TopoBench code and then records the changes used for the wireless full-mesh HPC topology thesis.
+
+## Important Local Commits
+
+- `34f4649` forces HiGHS PDLP with presolve disabled in the LP runner.
+- `9f4b7c0` parallelizes Jyothi-style LP generation.
+- `e7020ed` adds progress logging to the raw Jyothi sweep helper.
+- `a5e6aeb` fixes Hypercube longest-matching server IDs.
+- `30fa610` fixes Fat-tree all-to-all traffic generation.
+
+## Added Reproduction Assets
+
+- `scripts/jyothi_raw_sweep.sh`: local raw-`K` reproduction helper for Fat-tree, Jellyfish, Hypercube, and Dragonfly under selected traffic modes.
+- `resultfiles/jyothi_raw*/`: compact CSV outputs from local reproduction checks.
+
+Generated LP files, pathlength files, solver logs, and compiled artifacts are intentionally ignored.

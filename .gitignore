@@ -1,0 +1,14 @@
+*.class
+*.pyc
+__pycache__/
+Highs.log
+flowIDmap
+linkCaps
+maxWeightMatch.txt
+lpmaker/serverDist1.txt
+topology/*.lp
+topology/pathlengths/*.txt
+resultfiles/**/logs/
+resultfiles/**/meta/
+resultfiles/**/rows/
+resultfiles/**/work/
